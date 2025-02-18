@@ -73,7 +73,7 @@ def handle_move(i, j):
     st.session_state.game_state = new_state
 
 # Streamlit UI
-st.title("AI Othello")
+st.title("API Othello")
 
 # Controls container
 with st.container():
