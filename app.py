@@ -4,8 +4,10 @@ import requests
 import json
 import os
 
-# API endpoint configurations
-API_BASE_URL = "https://stpete2-othello-api.hf.space"  # Hugging Face Space URL
+
+API_BASE_URL = "https://stpete2-othello-api.hf.space/api"  # 修正: /api を追加
+# または
+# API_BASE_URL = "https://api-inference.huggingface.co/models/stpete2/othello-api"
 
 # Add your Hugging Face API token
 HF_TOKEN = os.getenv("HF_TOKEN")  # Set this in your environment variables
@@ -16,15 +18,30 @@ class GameInterface:
     def new_game():
         """Start a new game via API"""
         try:
+            # デバッグ情報を表示
+            st.write(f"Attempting to connect to: {API_BASE_URL}/new-game")
+            
             response = requests.get(f"{API_BASE_URL}/new-game", headers=HEADERS)
+            st.write(f"Response status: {response.status_code}")
+            st.write(f"Response content: {response.text[:200]}...")  # 最初の200文字のみ表示
+            
             response.raise_for_status()
             return response.json()
         except Exception as e:
             st.error(f"Failed to start new game: {str(e)}")
-            # Return a default empty board state
+            # デフォルトの初期盤面を返す
             return {
-                "board": [[0] * 8 for _ in range(8)],
-                "valid_moves": [],
+                "board": [
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, -1, 1, 0, 0, 0],
+                    [0, 0, 0, 1, -1, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0]
+                ],
+                "valid_moves": [[2, 3], [3, 2], [4, 5], [5, 4]],
                 "winner": None
             }
 
@@ -59,6 +76,7 @@ class GameInterface:
         except Exception as e:
             st.error(f"Failed to get valid moves: {str(e)}")
             return []
+
 
 # Streamlit UI setup
 st.set_page_config(layout="centered", page_title="AI Othello")
