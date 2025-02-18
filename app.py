@@ -3,6 +3,7 @@ import streamlit as st
 import numpy as np
 from othello import OthelloGame, OthelloAI
 import torch
+import os
 
 # Streamlit UI setup
 st.set_page_config(layout="centered", page_title="AI Othello")
@@ -11,9 +12,12 @@ st.set_page_config(layout="centered", page_title="AI Othello")
 if 'game' not in st.session_state:
     st.session_state.game = OthelloGame()
     st.session_state.ai = OthelloAI()
-    # モデルのロード
+    # モデルのロード（ローカルパスを使用）
     try:
-        st.session_state.ai.load_model("https://huggingface.co/stpete2/dqn_othello_20250216/resolve/main/othello_model.pth")
+        model_path = "othello_model.pth"  # Spaces上のルートディレクトリにある場合
+        # または
+        # model_path = os.path.join(os.path.dirname(__file__), "othello_model.pth")
+        st.session_state.ai.load_model(model_path)
     except Exception as e:
         st.error(f"Error loading model: {str(e)}")
 
@@ -163,6 +167,13 @@ with st.container():
 # Reset move_made flag if needed
 if 'move_made' in st.session_state and st.session_state.move_made:
     st.session_state.move_made = False
+
+# Add debug information
+st.markdown("---")
+st.write("Debug Information:")
+st.write(f"Current Directory: {os.getcwd()}")
+st.write(f"Directory Contents: {os.listdir('.')}")
+
 
 
 
