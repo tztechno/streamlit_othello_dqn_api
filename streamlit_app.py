@@ -8,18 +8,18 @@ import os
 # Streamlit UI setup
 st.set_page_config(layout="centered", page_title="AI Othello")
 
+
 # Initialize session state
 if 'game' not in st.session_state:
     st.session_state.game = OthelloGame()
     st.session_state.ai = OthelloAI()
-    # モデルのロード（ローカルパスを使用）
+    # モデルのロード（HuggingFaceのURLを使用）
     try:
-        model_path = "othello_model.pth"  # Spaces上のルートディレクトリにある場合
-        # または
-        # model_path = os.path.join(os.path.dirname(__file__), "othello_model.pth")
-        st.session_state.ai.load_model(model_path)
+        model_url = "https://huggingface.co/stpete2/dqn_othello_20250216/resolve/main/othello_model.pth"
+        st.session_state.ai.load_model(model_url)
     except Exception as e:
         st.error(f"Error loading model: {str(e)}")
+
 
 def handle_move(i, j):
     """Handle a move at position (i, j)"""
